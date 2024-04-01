@@ -18,6 +18,7 @@ const schema = Joi.object({
         .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
 })
     
+
 router.get('/', async (req, res, next) => {
   const users = await listContacts()
   res.status(200).send(users)
