@@ -1,6 +1,6 @@
 const express = require('express')
 const Joi = require('joi') 
-const {listContacts, getContactById, removeContact,  addContact, updateContact } = require('../../models/contacts.js')
+const {listContacts, getContactById, removeContact,  addContact, updateContact, updateStatusContact } = require('../../models/contacts.js')
 const router = express.Router()
 
 
@@ -26,14 +26,13 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:contactId', async (req, res, next) => {
   const user = await getContactById(req.params.contactId)
-  if (user.length) {
+  if (user != null) {
     res.status(200).send(user)
 
-  }
-  else {
+  } else { 
     res.status(404)
     res.json({ message: 'Not Found' })
-   }
+  }
 })
 
 router.post('/', async (req, res, next) => {
@@ -56,14 +55,13 @@ router.post('/', async (req, res, next) => {
 })
 
 router.delete('/:contactId', async (req, res, next) => {
-  const msg = await removeContact(req.params.contactId)
-  if (msg === "id no existe") {
-    res.status(404).send({ message: 'Not Found' })
+  const result = await removeContact(req.params.contactId)
+
+  if (result != null) {
+    res.status(200).send({ message: 'contacto eliminado' })
   }
   else { 
-    res.status(200).send({ message: 'contacto eliminado' })
-    
-
+    res.status(404).send({ message: 'Not Found' })
   }
 })
 
@@ -74,15 +72,16 @@ router.put('/:contactId', async (req, res, next) => {
       res.status(404).send({ message: error.message })
     }
     else { 
-      const index = await updateContact(req.params.contactId, req.body)
-      if (index === 1) {
+      const result = await updateContact(req.params.contactId, req.body)
+      if (result != null) {
         res.status(200).send({ messege: 'Update Conctact Completed', contact: { id: req.params.contactId, name: req.body.name, email: req.body.email, phone: req.body.phone } })
-  
-      }
-      else { 
-        res.status(404).send({ message: 'Id not found' })
-      }
-
+          
+        }
+        else { 
+          res.status(404).send({ message: 'Id not found' })
+          
+  }
+      
     }
 
   }
@@ -91,6 +90,24 @@ router.put('/:contactId', async (req, res, next) => {
   }
 
   
+})
+
+router.patch('/:contactId', async (req, res, next) => {
+  if (req.body.favorite) { 
+
+    const result = await updateStatusContact(req.params.contactId, req.body.favorite)
+    if (result != null) {
+      res.status(200).send({ messege: 'Update Conctact Completed' })
+        
+    }
+    else { 
+        res.status(404).send({ message: 'Not found' })
+    }
+  }
+  else { 
+    res.status(404).send({ message: 'missing field favorite' })
+  }
+ 
 })
 
 
