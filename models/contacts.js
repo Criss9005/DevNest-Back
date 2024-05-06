@@ -1,12 +1,14 @@
-const fs = require('fs').promises;
-const crypto = require("crypto");
 const { json } = require('express');
-const Contact = require('./contact')
-const contactsPath = './models/contacts.json'
+const Contact = require('./contact-schema')
+
+const paginationOptions = {
+  page: 1,
+  limit: 20,
+}
 
 
 const listContacts = async () => {
-  const result = await Contact.find()
+  const result = await Contact.paginate({},paginationOptions)
   return result
 }
 
@@ -55,11 +57,23 @@ const updateStatusContact = async (contactId, favorite) => {
     return null
   }
 }
+
+const favContacts = async () => {
+  try {
+    const result = await Contact.find({ favorite: true}).exec();
+    return result
+  } catch (error) {
+    return null
+  }
+  
+}
+
 module.exports = {
   listContacts,
   getContactById,
   removeContact,
   addContact,
   updateContact,
-  updateStatusContact
+  updateStatusContact,
+  favContacts
 }
