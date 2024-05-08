@@ -22,12 +22,13 @@ const schema = Joi.object({
 
 ConctactRouter.get('/', ensureAuthenticated, async (req, res, next) => {
   const { favorite } = req.body
+  
   if (!favorite) {
-    const users = await listContacts()
+    const users = await listContacts(req.user.idUser)
     res.status(200).send(users)
     
   } else { 
-    const fav = await favContacts()
+    const fav = await favContacts(req.user.idUser)
     res.status(200).send(fav)
   }
   
@@ -37,7 +38,8 @@ ConctactRouter.get('/', ensureAuthenticated, async (req, res, next) => {
 })
 
 ConctactRouter.get('/:contactId', ensureAuthenticated, async (req, res, next) => {
-  const user = await getContactById(req.params.contactId)
+
+  const user = await getContactById(req.params.contactId, req.user.idUser)
   if (user != null) {
     res.status(200).send(user)
 
@@ -55,6 +57,7 @@ ConctactRouter.post('/', ensureAuthenticated, async (req, res, next) => {
       res.status(400).send({ message: error.message })
       
     } else { 
+      req.body.owner = req.user.idUser
       const contact= await addContact(req.body)
       res.status(201).send({ message: 'Contacto Creado exitosamente', contact: contact })
 

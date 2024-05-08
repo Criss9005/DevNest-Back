@@ -7,14 +7,15 @@ const paginationOptions = {
 }
 
 
-const listContacts = async () => {
-  const result = await Contact.paginate({},paginationOptions)
+const listContacts = async (ownerId) => {
+  //const result = await Contact.find({owner: ownerId})
+  const result = await Contact.paginate({owner: ownerId}, paginationOptions)
   return result
 }
 
-const getContactById = async (contactId) => {
+const getContactById = async (contactId, ownerId) => {
   try {
-    const result = await Contact.findOne({ _id: contactId })
+    const result = await Contact.findOne({ _id: contactId, owner: ownerId })
     return result
   } catch (error) {
     return null
@@ -34,6 +35,7 @@ const removeContact = async (contactId) => {
 }
 
 const addContact = async (body) => {
+ 
   const result = await Contact.create(body)
   return result
   
