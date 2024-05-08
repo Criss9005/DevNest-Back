@@ -1,7 +1,8 @@
 const express = require('express')
+const { ensureAuthenticated} = require("../../middlewares/validate-jwt.js")
 const Joi = require('joi') 
-const {listContacts, getContactById, removeContact,  addContact, updateContact, updateStatusContact } = require('../../models/contacts.js')
-const router = express.Router()
+const {favContacts, listContacts, getContactById, removeContact,  addContact, updateContact, updateStatusContact } = require('../../models/contacts.js')
+const ConctactRouter = express.Router();
 
 
 const schema = Joi.object({
@@ -19,13 +20,26 @@ const schema = Joi.object({
 })
     
 
-router.get('/', async (req, res, next) => {
-  const users = await listContacts()
-  res.status(200).send(users)
+ConctactRouter.get('/', ensureAuthenticated, async (req, res, next) => {
+  const { favorite } = req.body
+  
+  if (!favorite) {
+    const users = await listContacts(req.user.idUser)
+    res.status(200).send(users)
+    
+  } else { 
+    const fav = await favContacts(req.user.idUser)
+    res.status(200).send(fav)
+  }
+  
+
+  
+  
 })
 
-router.get('/:contactId', async (req, res, next) => {
-  const user = await getContactById(req.params.contactId)
+ConctactRouter.get('/:contactId', ensureAuthenticated, async (req, res, next) => {
+
+  const user = await getContactById(req.params.contactId, req.user.idUser)
   if (user != null) {
     res.status(200).send(user)
 
@@ -35,7 +49,7 @@ router.get('/:contactId', async (req, res, next) => {
   }
 })
 
-router.post('/', async (req, res, next) => {
+ConctactRouter.post('/', ensureAuthenticated, async (req, res, next) => {
   
   if (req.body.name && req.body.email && req.body.phone) {
     const { error, value} = schema.validate({ name: req.body.name, phone: req.body.phone, email: req.body.email });
@@ -43,6 +57,7 @@ router.post('/', async (req, res, next) => {
       res.status(400).send({ message: error.message })
       
     } else { 
+      req.body.owner = req.user.idUser
       const contact= await addContact(req.body)
       res.status(201).send({ message: 'Contacto Creado exitosamente', contact: contact })
 
@@ -54,7 +69,7 @@ router.post('/', async (req, res, next) => {
   }
 })
 
-router.delete('/:contactId', async (req, res, next) => {
+ConctactRouter.delete('/:contactId', ensureAuthenticated, async (req, res, next) => {
   const result = await removeContact(req.params.contactId)
 
   if (result != null) {
@@ -65,7 +80,7 @@ router.delete('/:contactId', async (req, res, next) => {
   }
 })
 
-router.put('/:contactId', async (req, res, next) => {
+ConctactRouter.put('/:contactId', ensureAuthenticated, async (req, res, next) => {
   if (req.body.name && req.body.email && req.body.phone) {
     const { error, value} = schema.validate({ name: req.body.name, phone: req.body.phone, email: req.body.email });
     if (error) {
@@ -92,7 +107,7 @@ router.put('/:contactId', async (req, res, next) => {
   
 })
 
-router.patch('/:contactId', async (req, res, next) => {
+ConctactRouter.patch('/:contactId', ensureAuthenticated, async (req, res, next) => {
   if (req.body.favorite) { 
 
     const result = await updateStatusContact(req.params.contactId, req.body.favorite)
@@ -111,4 +126,4 @@ router.patch('/:contactId', async (req, res, next) => {
 })
 
 
-module.exports = router
+module.exports = ConctactRouter
