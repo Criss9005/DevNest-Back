@@ -3,7 +3,7 @@ const {register, login, logout, removeToken, updateSub} = require('../../models/
 const authRouter = express.Router();
 const Joi = require('joi') 
 const { ensureAuthenticated} = require("../../middlewares/validate-jwt.js")
-
+const gravatar = require('gravatar')
 
 const schema = Joi.object({
       
@@ -26,7 +26,7 @@ authRouter.post('/signup', async (req, res, next) => {
                 res.status(400).send({ message: error.message })
                 
                 } else { 
-                
+                    req.body.avatarURL = gravatar.url(req.body.email);
                     const { success, user, message } = await register(req.body)
                     if (!success) {
                         return res.status(409).json({
