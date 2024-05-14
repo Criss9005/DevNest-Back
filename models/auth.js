@@ -126,7 +126,18 @@ try {
     }
 };
 
+const updateAvatar = async (id, name) => {
+try {
+      const result = await Users.findByIdAndUpdate({ _id: id }, { avatarURL : `http://localhost:3000/avatars/${name}` })
+  if (result) { 
+    return true
+  }
+    } catch (error) {
+      console.log(error)
+    }
+};
+
 
 module.exports = {
-   register, login, logout, removeToken, updateSub,
+   register, login, logout, removeToken, updateSub, updateAvatar,
 }
