@@ -4,6 +4,7 @@ const cors = require('cors')
 const path = require('path')
 
 const productsRouter = require('./routes/api/products')
+const authRouter = require('./routes/api/auth')
 
 const app = express()
 
@@ -14,6 +15,7 @@ app.use(cors())
 app.use(express.json())
 
 app.use('/api/products', productsRouter)
+app.use('/api/auth', authRouter)
 
 
 
