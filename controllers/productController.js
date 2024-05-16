@@ -36,14 +36,28 @@ exports.getDailyIntakePrivate = async (req, res) => {
   });
 
   // Save to database
-  const user = await User.findById(req.user.id);
-  user.dailyIntake = { dailyCalorieIntake, nonRecommendedFoods };
-  await user.save();
+  try {
+    // Find the user by ID and update the daily intake information
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
 
-  res.json({
-    dailyCalorieIntake: `Your recommended daily calorie intake is: ${dailyCalorieIntake} kcl`,
-    nonRecommendedFoods,
-  });
+    user.dailyIntake = {
+      calories: dailyCalorieIntake,
+      nonRecommendedFoods,
+    };
+
+    await user.save();
+
+    res.json({
+      dailyCalorieIntake: `Your recommended daily calorie intake is: ${dailyCalorieIntake} kcl`,
+      nonRecommendedFoods,
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
 };
 
 exports.searchFood = async (req, res) => {
