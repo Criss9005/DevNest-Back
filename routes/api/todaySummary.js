@@ -9,7 +9,7 @@ const todaySummaryRouter = express.Router();
 todaySummaryRouter.get("/", async (req, res) => {
   const { idUser, date } = req.body;
   const result = await getDaylySummary(idUser, date);
-  if (result) res.status(200).json({ message: "found some data", result });
+  if (result) res.status(200).send({ message: "found some data", result });
   else res.status(404).json({ message: "not data found" });
 });
 
