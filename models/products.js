@@ -6,21 +6,11 @@ const paginationOptions = {
 };
 
 const listProducts = async () => {
-  //const result = await Contact.find({owner: ownerId})
+  // const result = await Contact.find({owner: ownerId})
   const result = await products.paginate({}, paginationOptions);
   return result;
 };
 
-const addConsumedProduct = async (data) => {
-  const { productName, idUser, date } = data;
-  const product = {
-    productName,
-    idUser,
-    // date,
-  };
-};
-
 module.exports = {
   listProducts,
-  addConsumedProduct,
 };
