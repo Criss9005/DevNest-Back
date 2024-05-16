@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const mongoosePaginate = require("mongoose-paginate-v2");
-const { checkout } = require("../routes/api/products");
+// const { checkout } = require("../routes/api/products");
 
 const productSchema = new Schema(
   {
