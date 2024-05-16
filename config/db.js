@@ -1,12 +1,15 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
 
+// Conectado a la base de datos de MongoDB
+
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    const uri = process.env.MONGODB_URI;
+    if (!uri) {
+      throw new Error("MONGO_URI is not defined in the environment variables");
+    }
+    await mongoose.connect(uri);
     console.log("MongoDB connected");
   } catch (err) {
     console.error(err.message);
