@@ -16,13 +16,12 @@ const todaySummarySchema = new Schema(
       required: [true, "idUser is required."],
     },
     date: {
-      type: Date,
+      type: String,
       required: [true, "date is required."],
     },
   },
   { collection: "todaySumary" }
 );
 
-// todaySummarySchema.plugin(mongoosePaginate);
 const todaySummary = mongoose.model("todaySummary", todaySummarySchema);
 module.exports = todaySummary;
