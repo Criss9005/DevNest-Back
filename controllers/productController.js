@@ -37,14 +37,13 @@ exports.getDailyIntakePrivate = async (req, res) => {
 
   // Save to database
   try {
-    // Find the user by ID and update the daily intake information
     const user = await User.findById(req.user.id);
     if (!user) {
       return res.status(404).json({ msg: "User not found" });
     }
 
     user.dailyIntake = {
-      calories: dailyCalorieIntake,
+      dailyCalorieIntake: dailyCalorieIntake,
       nonRecommendedFoods,
     };
 
