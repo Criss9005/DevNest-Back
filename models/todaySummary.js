@@ -11,7 +11,7 @@ function getDate() {
   const month = addZero(today.getMonth() + 1);
   const year = today.getFullYear();
 
-  return `${day}/${month}/${year}`;
+  return `${day}-${month}-${year}`;
 }
 
 const getDaylySummary = async (idUser, date) => {
