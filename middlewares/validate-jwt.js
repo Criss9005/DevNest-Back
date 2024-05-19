@@ -23,7 +23,8 @@ const ensureAuthenticated = (req, res, next) => {
         idUser: payload.idUser,
         
     }; 
-    
+
+       
     next();
 }
 

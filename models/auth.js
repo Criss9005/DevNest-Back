@@ -55,6 +55,11 @@ const login = async (email, password) => {
       exp: moment().add(12,"hours").unix()
     }, process.env.TOKEN)
 
+    const Rtoken = jwt.sign({
+      iat: moment().unix(),
+      exp: moment().add(14,"hours").unix()
+    }, process.env.RTOKEN)
+
       const newUser = {
           email: user.email,
           username: user.username,
@@ -64,11 +69,10 @@ const login = async (email, password) => {
       }
       const data = {
           accesToken: token,
-          refreshToken: token,
+          refreshToken: Rtoken,
           sid: crypto.randomBytes(16).toString("hex"),
           user: newUser,
 
-          
       }
     
     const validPassword = await bcrypt.compare(password, user.password)
