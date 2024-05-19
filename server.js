@@ -5,6 +5,8 @@ const productRoutes = require("./routes/api/productRoutes");
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 require("dotenv").config();
+const mongoose = require("mongoose");
+//const app = require("./app");
 
 const app = express();
 
@@ -61,4 +63,12 @@ app.use("/api/products", productRoutes);
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+app.listen(process.env.PORT, async () => {
+  mongoose
+    .connect(process.env.MONGODB)
+    .then(() => console.log("Database connection successful"))
+    .catch((err) => {
+      console.log(err);
+    });
+  console.log(`Server running. Use our API on port: ${process.env.PORT}`);
+});
