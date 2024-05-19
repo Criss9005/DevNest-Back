@@ -1,9 +1,9 @@
 const express = require('express')
-const {register, login, logout, removeToken, updateSub} = require('../../models/auth')
+const {register, login, blackListToken, newPairOfTokens} = require('../../models/auth')
 const authRouter = express.Router();
 const Joi = require('joi') 
 const { ensureAuthenticated} = require("../../middlewares/validate-jwt.js")
-
+const { isInBlackList} = require("../../middlewares/blacklistCheck.js")
 
 const schema = Joi.object({
       
@@ -62,7 +62,7 @@ authRouter.post('/login', async (req, res, next) => {
                 
                 } else { 
                     const {email, password } = req.body
-                    const { success, result, message, token } = await login(email, password)
+                    const { success, result, message} = await login(email, password)
                     if (!success) {
                         return res.status(401).json({
                             message
@@ -72,7 +72,7 @@ authRouter.post('/login', async (req, res, next) => {
                   
                     
                     return res.status(200).json({
-                        result, token
+                        result
                     })
 
                 }
@@ -88,37 +88,70 @@ authRouter.post('/login', async (req, res, next) => {
     
 })
 
-authRouter.get('/logout', ensureAuthenticated, async (req, res, next) => {
+authRouter.post('/logout', ensureAuthenticated, async (req, res, next) => {
     try {
+        if (req.body.sid) {
+            
         if (!req.user) { 
             return res.status(401).json({
                 message: "Not authorized"
             });
         }
-        const { success } = await logout(req.user.idUser)
+        
+        const data = {
+            token: req.user.token,
+            sid: req.body.sid
+        }
+
+        const { success } = await blackListToken(data)
         if (!success) {
             return res.status(401).json({
                 message: "Not authorized"
             });
         }
         
-        await removeToken(req.user.idUser)
-        return res.status(204).json('No Content')
-        
+        return res.status(204).json('No content')
+        } else {
+            res.status(400)
+            res.json({ message: 'missing required fields' })
+
+        }
     } catch (error) {
         return res.status(409).json({ message: error.message })
-    }
+        }
+        
 });
 
-authRouter.get('/refresh', ensureAuthenticated, async (req, res, next) => {
+authRouter.post('/refresh', ensureAuthenticated, isInBlackList,  async (req, res, next) => {
   
-  res.status(200).json({
-    status: 'success',
-    data: {
-        message: `Authorization was successful`,
-        result: req.user
-    },
-  });
+    try {
+        if (req.body.sid) {
+
+            const newPair = await newPairOfTokens(req.body.sid)
+            if (!newPair) { 
+                return res.status(401).json({
+                message: "Not authorized"
+            });
+            }
+            
+            const data = {
+                token: req.user.token,
+                sid: req.body.sid
+            };
+
+            await blackListToken(data)
+
+            return res.status(200).json({data: newPair})
+
+        }
+        else { 
+            res.status(400)
+            res.json({ message: 'missing required fields' })
+        }
+    } catch (error) {
+        
+    }
+  
 });
 
 module.exports = authRouter
