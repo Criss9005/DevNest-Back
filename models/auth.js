@@ -5,6 +5,7 @@ const { valid } = require('joi');
 const jwt = require('jsonwebtoken')
 const moment = require('moment')
 const crypto = require("crypto");
+const blackList = require('./blackList-schema.js')
 
 const register = async (data) => {
   const user = await users.findOne({
@@ -66,7 +67,8 @@ const login = async (email, password) => {
           userData: user.userData,
           id: user._id,
           
-      }
+    }
+    
       const data = {
           accesToken: token,
           refreshToken: Rtoken,
@@ -119,17 +121,55 @@ const logout = async (id) => {
   
 };
 
-const removeToken = async (id) => {
+const blackListToken = async (data) => {
 try {
-      const result1 = await users.findByIdAndUpdate({ _id: id }, { token : null })
-      
+
+  const result1 = await blackList.create(data)
+  if (result1) {
+      return {
+      success: true,
+    
+    }
+  } 
+
+    return {
+      success: false,
+    
+    }
+    } catch (error) {
+      console.log(error)
+    }
+};
+
+const newPairOfTokens = async (sid) => {
+try {
+
+  const token = jwt.sign({
+      iat: moment().unix(),
+      exp: moment().add(12,"hours").unix()
+    }, process.env.TOKEN)
+
+    const Rtoken = jwt.sign({
+      iat: moment().unix(),
+      exp: moment().add(14,"hours").unix()
+    }, process.env.RTOKEN)
+
+     
+      const data = {
+          newAccesToken: token,
+          newRefreshToken: Rtoken,
+          sid: crypto.randomBytes(16).toString("hex")
+
+      }
+
+    return data
+
     } catch (error) {
       console.log(error)
     }
 };
 
 
-
 module.exports = {
-   register, login, logout, removeToken,
+   register, login, logout, blackListToken, newPairOfTokens,
 }

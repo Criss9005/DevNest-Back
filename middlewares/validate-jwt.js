@@ -18,9 +18,10 @@ const ensureAuthenticated = (req, res, next) => {
             message: "Not authorized"
         });
     }
-
+    
     req.user = {
         idUser: payload.idUser,
+        token: token,
         
     }; 
 
