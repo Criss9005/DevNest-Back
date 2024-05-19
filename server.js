@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/api/authRoutes");
 const productRoutes = require("./routes/api/productRoutes");
@@ -7,6 +8,9 @@ const swaggerUi = require("swagger-ui-express");
 require("dotenv").config();
 
 const app = express();
+
+// CORS crossdomain tool
+app.use(cors());
 
 // Connect Database
 connectDB();
