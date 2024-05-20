@@ -1,14 +1,18 @@
 const express = require("express");
-const connectDB = require("./config/db");
 const cors = require("cors");
+const connectDB = require("./config/db");
 const authRoutes = require("./routes/api/authRoutes");
 const productRoutes = require("./routes/api/productRoutes");
+const todaySummaryRoutes = require("./routes/api/todaySummaryRoutes");
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 require("dotenv").config();
 
 const app = express();
-app.use(cors({ origin: "http://localhost:3000" }));
+
+// CORS crossdomain tool
+app.use(cors());
+
 // Connect Database
 connectDB();
 
@@ -59,6 +63,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/todaySummary", todaySummaryRoutes);
 
 const PORT = process.env.PORT || 5000;
 

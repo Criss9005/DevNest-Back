@@ -14,7 +14,7 @@ function getDate() {
   return `${day}-${month}-${year}`;
 }
 
-const getDaylySummary = async (idUser, date) => {
+const getDailySummary = async (idUser, date) => {
   if (idUser && date) {
     const result = await todaySummary.find({ idUser, date });
     console.log(result);
@@ -23,7 +23,7 @@ const getDaylySummary = async (idUser, date) => {
   return { succes: false, message: "Empty fields." };
 };
 
-const deleteDaylySummary = async (id) => {
+const deleteDailySummary = async (id) => {
   if (id) {
     const result = await todaySummary.findByIdAndDelete({ _id: id });
     return { succes: true, message: "Register removed", data: result };
@@ -31,7 +31,7 @@ const deleteDaylySummary = async (id) => {
   return { succes: false, message: "Empty field id" };
 };
 
-const addToDaylySummary = async (data) => {
+const addToDailySummary = async (data) => {
   try {
     const { productName, grams, idUser } = data;
     const daySummaryProduct = {
@@ -42,11 +42,11 @@ const addToDaylySummary = async (data) => {
     };
     const result = await todaySummary.create(daySummaryProduct);
     console.log(result + "result");
-    return { succes: true, message: "Product added to dayly summary" };
+    return { succes: true, message: "Product added to daily summary" };
   } catch (error) {
     console.log(error);
     return { succes: false, message: error };
   }
 };
 
-module.exports = { addToDaylySummary, getDaylySummary, deleteDaylySummary };
+module.exports = { addToDailySummary, getDailySummary, deleteDailySummary };

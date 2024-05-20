@@ -23,5 +23,5 @@ const todaySummarySchema = new Schema(
   { collection: "todaySumary" }
 );
 
-const todaySummary = mongoose.model("todaySummary", todaySummarySchema);
+const todaySummary = mongoose.model("TodaySummary", todaySummarySchema);
 module.exports = todaySummary;
