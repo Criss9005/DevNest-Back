@@ -7,7 +7,7 @@ const moment = require('moment')
 const crypto = require("crypto");
 const blackList = require('./blackList-schema.js')
 
-const register = async (data) => {
+const registerF = async (data) => {
   const user = await users.findOne({
     email: data.email
   })
@@ -37,7 +37,7 @@ const register = async (data) => {
   
 };
 
-const login = async (email, password) => { 
+const loginF = async (email, password) => { 
   try {
     const user = await users.findOne({
       email,
@@ -171,5 +171,5 @@ try {
 
 
 module.exports = {
-   register, login, logout, blackListToken, newPairOfTokens,
+   registerF, loginF, logout, blackListToken, newPairOfTokens,
 }
