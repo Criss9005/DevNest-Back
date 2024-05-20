@@ -28,39 +28,39 @@ const userSchema = new Schema({
       type: Number,
       minimun: 20,
       maximun: 500,
-      default: null
+      default: 0
     },
     height: {
       type: Number,
       minimun: 100,
       maximun: 250,
-      default: null
+      default: 0
     },
     age: {
       type: Number,
       minimun: 18,
       maximun: 100,
-      default: null
+      default: 0
     },
     dailyRate: {
       type: String,
-      default: null
+      default: 0
     },
     bloodType: {
       type: Number,
       minimun: 1,
       maximun: 4,
-      default: null
+      default: 0
     },
     desiredWeight: {
       type: Number,
       minimun: 20,
       maximun: 500,
-      default: null
+      default: 0
     },
     notAllowedProducts: {
-      type: String,
-      default: null
+      type: Array,
+      default: []
     }
 
   } 

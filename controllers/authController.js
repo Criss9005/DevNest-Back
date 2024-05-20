@@ -1,9 +1,11 @@
-const express = require('express')
-const authRouter = express.Router();
+
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const Joi = require('joi') 
-const {register, login, blackListToken, newPairOfTokens} = require('../../models/auth')
-const { ensureAuthenticated} = require("../../middlewares/validate-jwt.js")
-const { isInBlackList} = require("../../middlewares/blacklistCheck.js")
+
+const {registerF, loginF, blackListToken, newPairOfTokens} = require('../models/auth.js')
+const { ensureAuthenticated} = require("../middlewares/validate-jwt.js")
+const { isInBlackList } = require("../middlewares/blacklistCheck.js")
 
 const schema = Joi.object({
       
@@ -17,8 +19,11 @@ const schema = Joi.object({
         .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
 })
 
-authRouter.post('/register', async (req, res, next) => {
-    try {
+
+
+const register = async (req, res) => {
+   
+  try {
         
         if (req.body.password && req.body.email) {
             const { error, value} = schema.validate({ password: req.body.password, email: req.body.email });
@@ -27,7 +32,7 @@ authRouter.post('/register', async (req, res, next) => {
                 
                 } else { 
                     
-                    const { success, user, message } = await register(req.body)
+                    const { success, user, message } = await registerF(req.body)
                     if (!success) {
                         return res.status(409).json({
                             message
@@ -44,16 +49,16 @@ authRouter.post('/register', async (req, res, next) => {
             res.status(400)
             res.json({ message: 'missing required fields' })
         }
-        } catch (error) {
-        return res.status(409).json({ message: "Email in use" })
+  } catch (error) {
+      
+        return res.status(400).json({ message: 'missing required fields' })
         
     }
-    
-})
 
+};
 
-authRouter.post('/login', async (req, res, next) => {
-    try {
+ const login = async (req, res) => {
+ try {
         
         if (req.body.password && req.body.email) {
             const { error, value} = schema.validate({ password: req.body.password, email: req.body.email });
@@ -62,7 +67,7 @@ authRouter.post('/login', async (req, res, next) => {
                 
                 } else { 
                     const {email, password } = req.body
-                    const { success, result, message} = await login(email, password)
+                    const { success, result, message} = await loginF(email, password)
                     if (!success) {
                         return res.status(401).json({
                             message
@@ -75,6 +80,7 @@ authRouter.post('/login', async (req, res, next) => {
                         result
                     })
 
+
                 }
         }
         else { 
@@ -85,11 +91,10 @@ authRouter.post('/login', async (req, res, next) => {
         return res.status(409).json({ message: error.message})
         
     }
-    
-})
+}; 
 
-authRouter.post('/logout', ensureAuthenticated, async (req, res, next) => {
-    try {
+const logout = async (req, res, next) => {
+ try {
         if (req.body.sid) {
             
         if (!req.user) { 
@@ -119,19 +124,17 @@ authRouter.post('/logout', ensureAuthenticated, async (req, res, next) => {
     } catch (error) {
         return res.status(409).json({ message: error.message })
         }
-        
-});
+}; 
 
-authRouter.post('/refresh', ensureAuthenticated, isInBlackList,  async (req, res, next) => {
-  
+const refresh = async (req, res) => {
     try {
         if (req.body.sid) {
 
             const newPair = await newPairOfTokens(req.body.sid)
-            if (!newPair) { 
+            if (!newPair) {
                 return res.status(401).json({
-                message: "Not authorized"
-            });
+                    message: "Not authorized"
+                });
             }
             
             const data = {
@@ -141,17 +144,18 @@ authRouter.post('/refresh', ensureAuthenticated, isInBlackList,  async (req, res
 
             await blackListToken(data)
 
-            return res.status(200).json({data: newPair})
+            return res.status(200).json({ data: newPair })
 
         }
-        else { 
+        else {
             res.status(400)
             res.json({ message: 'missing required fields' })
         }
     } catch (error) {
         
     }
-  
-});
+}
+module.exports = {
+    register, login, logout, refresh
+}
 
-module.exports = authRouter
