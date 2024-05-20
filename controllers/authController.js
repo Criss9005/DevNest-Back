@@ -1,3 +1,4 @@
+
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Joi = require('joi') 
@@ -53,6 +54,7 @@ const register = async (req, res) => {
         return res.status(400).json({ message: 'missing required fields' })
         
     }
+
 };
 
  const login = async (req, res) => {
@@ -77,6 +79,7 @@ const register = async (req, res) => {
                     return res.status(200).json({
                         result
                     })
+
 
                 }
         }
@@ -155,3 +158,4 @@ const refresh = async (req, res) => {
 module.exports = {
     register, login, logout, refresh
 }
+

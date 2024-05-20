@@ -11,9 +11,13 @@ exports.getDailyIntakePublic = async (req, res) => {
     161 -
     10 * (currentWeight - desiredWeight); // Calculo de las calorias
 
-  const nonRecommendedFoods = await Product.find({
+  const nonRecommendedFoodsList = await Product.find({
     [`groupBloodNotAllowed.${bloodType}`]: true,
-  });
+  })
+    .limit(4)
+    .select("title");
+
+  const nonRecommendedFoods = nonRecommendedFoodsList.map((food) => food.title);
 
   res.json({
     dailyCalorieIntake: `Your recommended daily calorie intake is: ${dailyCalorieIntake} kcl`,
@@ -31,9 +35,13 @@ exports.getDailyIntakePrivate = async (req, res) => {
     161 -
     10 * (currentWeight - desiredWeight);
 
-  const nonRecommendedFoods = await Product.find({
+  const nonRecommendedFoodsList = await Product.find({
     [`groupBloodNotAllowed.${bloodType}`]: true,
-  });
+  })
+    .limit(4)
+    .select("title");
+
+  const nonRecommendedFoods = nonRecommendedFoodsList.map((food) => food.title);
 
   // Save to database
   try {
