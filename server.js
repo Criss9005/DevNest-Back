@@ -1,5 +1,6 @@
 const express = require("express");
 const connectDB = require("./config/db");
+const cors = require("cors");
 const authRoutes = require("./routes/api/authRoutes");
 const productRoutes = require("./routes/api/productRoutes");
 const swaggerJsDoc = require("swagger-jsdoc");
@@ -7,7 +8,7 @@ const swaggerUi = require("swagger-ui-express");
 require("dotenv").config();
 
 const app = express();
-
+app.use(cors({ origin: "http://localhost:3000" }));
 // Connect Database
 connectDB();
 
