@@ -43,10 +43,8 @@ const addToDailySummary = async (data) => {
       date: getDate(),
     };
     const result = await todaySummary.create(daySummaryProduct);
-    console.log(result + "result");
-    return { succes: true, message: "Product added to daily summary" };
+    return { succes: true, message: "Product added to daily summary", result };
   } catch (error) {
-    console.log(error);
     return { succes: false, message: error };
   }
 };
