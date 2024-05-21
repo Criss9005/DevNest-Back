@@ -1,7 +1,7 @@
 const express = require('express')
-const {register, login, blackListToken, newPairOfTokens} = require('../../models/auth')
 const authRouter = express.Router();
 const Joi = require('joi') 
+const {register, login, blackListToken, newPairOfTokens} = require('../../models/auth')
 const { ensureAuthenticated} = require("../../middlewares/validate-jwt.js")
 const { isInBlackList} = require("../../middlewares/blacklistCheck.js")
 

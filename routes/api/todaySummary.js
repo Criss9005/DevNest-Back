@@ -8,7 +8,6 @@ const todaySummaryRouter = express.Router();
 
 todaySummaryRouter.get("/:idUser/:date", async (req, res) => {
   const { idUser, date } = req.params;
-  console.log(req.params);
   const result = await getDaylySummary(idUser, date);
   if (result.succes) res.status(200).send(result.data);
   else res.status(404).json({ message: result.message });

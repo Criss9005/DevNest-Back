@@ -1,5 +1,7 @@
 const express = require("express");
-const { register, login } = require("../../controllers/authController");
+const { register, login, logout, refresh } = require("../../controllers/authController");
+const { ensureAuthenticated } = require("../../middlewares/validate-jwt")
+const {isInBlackList } = require("../../middlewares/blacklistCheck")
 
 const router = express.Router();
 
@@ -68,5 +70,70 @@ router.post("/register", register);
  *         description: Bad request
  */
 router.post("/login", login);
+
+/**
+ * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     summary: Logout session
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *             example:
+ *               sid: 1d1502ac852d29c670476ff808b2eaf3
+ *               
+ *     responses:
+ *       204:
+ *         description: Successful operation
+ *       400:
+ *         description: No token provided
+ *       401:
+ *         description: Unauthorized (invalid access token)
+ *       404:
+ *         description: Invalid user / Invalid session
+ */
+router.post("/logout", ensureAuthenticated, logout);
+
+/**
+ * @swagger
+ * /api/auth/refresh:
+ *   post:
+ *     summary: Get new pair of tokens
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *             example:
+ *               sid: 1d1502ac852d29c670476ff808b2eaf3
+ *               
+ *     responses:
+ *       204:
+ *         description: Successful operation
+ *       400:
+ *         description: No token provided
+ *       401:
+ *         description: Unauthorized (invalid refresh token)
+ *       404:
+ *         description: Invalid user / Invalid session
+ */
+router.post("/refresh", ensureAuthenticated, isInBlackList, refresh);
+
 
 module.exports = router;
