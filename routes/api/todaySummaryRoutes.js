@@ -32,7 +32,7 @@ const router = express.Router();
  *         required: true
  *         schema:
  *           type: string
- *         description: Date for the summary
+ *         description: Date for the summary (dd-mm-yyyy)
  *     responses:
  *       200:
  *         description: Successfully retrieved

@@ -6,10 +6,12 @@ function getDate() {
   function addZero(num) {
     return num < 10 ? `0${num}` : num;
   }
-
-  const day = addZero(today.getDate());
-  const month = addZero(today.getMonth() + 1);
-  const year = today.getFullYear();
+  const localTime = new Date(
+    today.getTime() - today.getTimezoneOffset() * 60000
+  );
+  const day = addZero(localTime.getDate());
+  const month = addZero(localTime.getMonth() + 1);
+  const year = localTime.getFullYear();
 
   return `${day}-${month}-${year}`;
 }
@@ -41,10 +43,8 @@ const addToDailySummary = async (data) => {
       date: getDate(),
     };
     const result = await todaySummary.create(daySummaryProduct);
-    console.log(result + "result");
-    return { succes: true, message: "Product added to daily summary" };
+    return { succes: true, message: "Product added to daily summary", result };
   } catch (error) {
-    console.log(error);
     return { succes: false, message: error };
   }
 };
