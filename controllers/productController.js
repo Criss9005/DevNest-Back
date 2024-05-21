@@ -4,12 +4,13 @@ const User = require("../models/user");
 exports.getDailyIntakePublic = async (req, res) => {
   const { height, desiredWeight, bloodType, age, currentWeight } = req.query;
 
-  const dailyCalorieIntake =
+  const dailyCalorieIntake = Math.ceil(
     10 * currentWeight +
-    6.25 * height -
-    5 * age -
-    161 -
-    10 * (currentWeight - desiredWeight); // Calculo de las calorias
+      6.25 * height -
+      5 * age -
+      161 -
+      10 * (currentWeight - desiredWeight)
+  ); // Calculo de las calorias
 
   const nonRecommendedFoodsList = await Product.find({
     [`groupBloodNotAllowed.${bloodType}`]: true,
@@ -20,7 +21,7 @@ exports.getDailyIntakePublic = async (req, res) => {
   const nonRecommendedFoods = nonRecommendedFoodsList.map((food) => food.title);
 
   res.json({
-    dailyCalorieIntake: `Your recommended daily calorie intake is: ${dailyCalorieIntake} kcl`,
+    dailyCalorieIntake: `${dailyCalorieIntake} kcl`,
     nonRecommendedFoods,
   });
 };
@@ -28,12 +29,13 @@ exports.getDailyIntakePublic = async (req, res) => {
 exports.getDailyIntakePrivate = async (req, res) => {
   const { height, desiredWeight, bloodType, age, currentWeight } = req.body;
 
-  const dailyCalorieIntake =
+  const dailyCalorieIntake = Math.ceil(
     10 * currentWeight +
-    6.25 * height -
-    5 * age -
-    161 -
-    10 * (currentWeight - desiredWeight);
+      6.25 * height -
+      5 * age -
+      161 -
+      10 * (currentWeight - desiredWeight)
+  );
 
   const nonRecommendedFoodsList = await Product.find({
     [`groupBloodNotAllowed.${bloodType}`]: true,
@@ -58,7 +60,7 @@ exports.getDailyIntakePrivate = async (req, res) => {
     await user.save();
 
     res.json({
-      dailyCalorieIntake: `Your recommended daily calorie intake is: ${dailyCalorieIntake} kcl`,
+      dailyCalorieIntake: `${dailyCalorieIntake} kcl`,
       nonRecommendedFoods,
     });
   } catch (err) {
