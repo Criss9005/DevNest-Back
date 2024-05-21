@@ -6,10 +6,12 @@ function getDate() {
   function addZero(num) {
     return num < 10 ? `0${num}` : num;
   }
-
-  const day = addZero(today.getDate());
-  const month = addZero(today.getMonth() + 1);
-  const year = today.getFullYear();
+  const localTime = new Date(
+    today.getTime() - today.getTimezoneOffset() * 60000
+  );
+  const day = addZero(localTime.getDate());
+  const month = addZero(localTime.getMonth() + 1);
+  const year = localTime.getFullYear();
 
   return `${day}-${month}-${year}`;
 }
