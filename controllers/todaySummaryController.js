@@ -12,11 +12,12 @@ exports.dailySummary = async (req, res) => {
 };
 
 exports.createDailySumary = async (req, res) => {
-  const { productName, grams, idUser } = req.body;
+  const { productName, grams, idUser, calories } = req.body;
   const productSummary = {
     productName,
     grams,
     idUser,
+    calories,
   };
   const result = await addToDailySummary(productSummary);
   if (result.succes) res.status(201).json(result.message);

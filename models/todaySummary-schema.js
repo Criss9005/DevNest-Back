@@ -19,6 +19,10 @@ const todaySummarySchema = new Schema(
       type: String,
       required: [true, "date is required."],
     },
+    calories: {
+      type: Number,
+      require: [true, "calories is required"],
+    },
   },
   { collection: "todaySumary" }
 );
