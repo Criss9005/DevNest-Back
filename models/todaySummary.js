@@ -35,12 +35,13 @@ const deleteDailySummary = async (id) => {
 
 const addToDailySummary = async (data) => {
   try {
-    const { productName, grams, idUser } = data;
+    const { productName, grams, idUser, calories } = data;
     const daySummaryProduct = {
       productName,
       grams,
       idUser,
       date: getDate(),
+      calories,
     };
     const result = await todaySummary.create(daySummaryProduct);
     return { succes: true, message: "Product added to daily summary", result };
