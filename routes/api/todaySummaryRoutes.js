@@ -60,10 +60,13 @@ router.get("/:idUser/:date", dailySummary);
  *                 type: number
  *               idUser:
  *                 type: string
+ *               calories:
+ *                 type: number
  *             example:
  *               productName: orange
  *               grams: 300
  *               idUser: 6644fa419ed07074a1b077a2
+ *               calories: 500
  *     responses:
  *       200:
  *         description: Successfully registered

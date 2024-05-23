@@ -14,11 +14,12 @@ todaySummaryRouter.get("/:idUser/:date", async (req, res) => {
 });
 
 todaySummaryRouter.post("/addSummary", async (req, res) => {
-  const { productName, grams, idUser } = req.body;
+  const { productName, grams, idUser, calories } = req.body;
   const productSummary = {
     productName,
     grams,
     idUser,
+    calories,
   };
   const result = await addToDaylySummary(productSummary);
   if (result.succes) res.status(201).json(result.message);
