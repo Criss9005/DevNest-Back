@@ -1,4 +1,4 @@
-const User = require("../models/user");
+const User = require("../models/users-schema");
 
 exports.getSavedDailyIntake = async (req, res) => {
   try {

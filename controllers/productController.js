@@ -1,5 +1,5 @@
 const Product = require("../models/products");
-const User = require("../models/user");
+const User = require("../models/users-schema");
 
 exports.getDailyIntakePublic = async (req, res) => {
   const { height, desiredWeight, bloodType, age, currentWeight } = req.query;
