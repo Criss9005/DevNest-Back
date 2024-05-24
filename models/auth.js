@@ -80,6 +80,9 @@ const loginF = async (email, password) => {
       email: user.email,
       username: user.username,
       userData: user.userData,
+    };
+
+    const dailyIntakeInfo = {
       dailyIntake: user.dailyIntake,
     };
 
@@ -88,6 +91,7 @@ const loginF = async (email, password) => {
       refreshToken: Rtoken,
       sid: crypto.randomBytes(16).toString("hex"),
       user: newUser,
+      dailyIntake: dailyIntakeInfo,
     };
 
     return {
