@@ -2,7 +2,7 @@ const User = require("../models/users-schema");
 
 exports.getSavedDailyIntake = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user.idUser);
     if (!user) {
       return res.status(404).json({ msg: "User not found" });
     }
