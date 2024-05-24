@@ -13,7 +13,10 @@ function getDate() {
     today.getTime() - today.getTimezoneOffset() * 60000
   )
     .toISOString()
-    .split("T")[0];
+    .split("T")[0]
+    .split("-")
+    .reverse()
+    .join("-");
   const day = addZero(localTime.getDate());
   const month = addZero(localTime.getMonth() + 1);
   const year = localTime.getFullYear();
