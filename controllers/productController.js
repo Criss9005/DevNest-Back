@@ -27,7 +27,7 @@ exports.getDailyIntakePublic = async (req, res) => {
 };
 
 exports.getDailyIntakePrivate = async (req, res) => {
-  const { height, desiredWeight, bloodType, age, currentWeight } = req.body;
+  const { height, desiredWeight, bloodType, age, currentWeight } = req.query;
 
   const dailyCalorieIntake = Math.ceil(
     10 * currentWeight +
@@ -45,9 +45,9 @@ exports.getDailyIntakePrivate = async (req, res) => {
 
   const nonRecommendedFoods = nonRecommendedFoodsList.map((food) => food.title);
 
-  // Save to database
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user.idUser);
+
     if (!user) {
       return res.status(404).json({ msg: "User not found" });
     }
