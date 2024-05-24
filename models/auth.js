@@ -80,6 +80,7 @@ const loginF = async (email, password) => {
       email: user.email,
       username: user.username,
       userData: user.userData,
+      dailyIntake: user.dailyIntake,
     };
 
     const data = {
