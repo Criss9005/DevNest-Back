@@ -5,7 +5,7 @@ const {
   searchFood,
 } = require("../../controllers/productController");
 const { getSavedDailyIntake } = require("../../controllers/userController");
-const authMiddleware = require("../../middlewares/authMiddleware");
+const { ensureAuthenticated } = require("../../middlewares/validate-jwt");
 
 const router = express.Router();
 
@@ -64,41 +64,49 @@ router.get("/public/daily-intake", getDailyIntakePublic);
 /**
  * @swagger
  * /api/products/private/daily-intake:
- *   post:
+ *   get:
  *     summary: Get daily calorie intake and non-recommended products (private)
  *     tags: [Products]
  *     security:
  *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               height:
- *                 type: number
- *               desiredWeight:
- *                 type: number
- *               bloodType:
- *                 type: number
- *               age:
- *                 type: number
- *               currentWeight:
- *                 type: number
- *             example:
- *               height: 170
- *               desiredWeight: 70
- *               bloodType: 1
- *               age: 25
- *               currentWeight: 75
+ *     parameters:
+ *       - in: query
+ *         name: height
+ *         schema:
+ *           type: number
+ *         required: true
+ *         description: Height of the user
+ *       - in: query
+ *         name: desiredWeight
+ *         schema:
+ *           type: number
+ *         required: true
+ *         description: Desired weight of the user
+ *       - in: query
+ *         name: bloodType
+ *         schema:
+ *           type: number
+ *         required: true
+ *         description: Blood type of the user
+ *       - in: query
+ *         name: age
+ *         schema:
+ *           type: number
+ *         required: true
+ *         description: Age of the user
+ *       - in: query
+ *         name: currentWeight
+ *         schema:
+ *           type: number
+ *         required: true
+ *         description: Current weight of the user
  *     responses:
  *       200:
  *         description: Successfully retrieved and saved daily intake
  *       400:
  *         description: Bad request
  */
-router.post("/private/daily-intake", authMiddleware, getDailyIntakePrivate);
+router.get("/private/daily-intake", ensureAuthenticated, getDailyIntakePrivate);
 
 /**
  * @swagger
@@ -114,7 +122,11 @@ router.post("/private/daily-intake", authMiddleware, getDailyIntakePrivate);
  *       404:
  *         description: User not found
  */
-router.get("/private/saved-daily-intake", authMiddleware, getSavedDailyIntake);
+router.get(
+  "/private/saved-daily-intake",
+  ensureAuthenticated,
+  getSavedDailyIntake
+);
 
 /**
  * @swagger

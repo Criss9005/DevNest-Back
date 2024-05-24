@@ -6,9 +6,14 @@ function getDate() {
   function addZero(num) {
     return num < 10 ? `0${num}` : num;
   }
+  // const localTime = new Date(
+  //   today.getTime() - today.getTimezoneOffset() * 60000
+  // );
   const localTime = new Date(
     today.getTime() - today.getTimezoneOffset() * 60000
-  );
+  )
+    .toISOString()
+    .split("T")[0];
   const day = addZero(localTime.getDate());
   const month = addZero(localTime.getMonth() + 1);
   const year = localTime.getFullYear();
