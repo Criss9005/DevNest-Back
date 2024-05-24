@@ -17,11 +17,8 @@ function getDate() {
     .split("-")
     .reverse()
     .join("-");
-  const day = addZero(localTime.getDate());
-  const month = addZero(localTime.getMonth() + 1);
-  const year = localTime.getFullYear();
 
-  return `${day}-${month}-${year}`;
+  return localTime;
 }
 
 const getDailySummary = async (idUser, date) => {
