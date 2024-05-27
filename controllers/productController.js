@@ -27,44 +27,57 @@ exports.getDailyIntakePublic = async (req, res) => {
 };
 
 exports.getDailyIntakePrivate = async (req, res) => {
-  const { height, desiredWeight, bloodType, age, currentWeight } = req.query;
-
-  const dailyCalorieIntake = Math.ceil(
-    10 * currentWeight +
-      6.25 * height -
-      5 * age -
-      161 -
-      10 * (currentWeight - desiredWeight)
-  );
-
-  const nonRecommendedFoodsList = await Product.find({
-    [`groupBloodNotAllowed.${bloodType}`]: true,
-  })
-    .limit(4)
-    .select("title");
-
-  const nonRecommendedFoods = nonRecommendedFoodsList.map((food) => food.title);
-
   try {
-    const user = await User.findById(req.user.idUser);
+    const { idUser } = req.user;
+    const { height, desiredWeight, bloodType, age, currentWeight } = req.body;
 
-    if (!user) {
-      return res.status(404).json({ msg: "User not found" });
+    if (
+      isNaN(height) ||
+      isNaN(desiredWeight) ||
+      isNaN(age) ||
+      isNaN(currentWeight)
+    ) {
+      return res.status(400).json({ message: "Invalid input data" });
     }
 
-    user.dailyIntake = {
-      dailyCalorieIntake: dailyCalorieIntake,
-      nonRecommendedFoods,
-    };
+    const dailyCalorieIntake = Math.ceil(
+      10 * currentWeight +
+        6.25 * height -
+        5 * age -
+        161 -
+        10 * (currentWeight - desiredWeight)
+    );
 
-    await user.save();
+    const nonRecommendedFoodsList = await Product.find({
+      [`groupBloodNotAllowed.${bloodType}`]: true,
+    })
+      .limit(4)
+      .select("title");
+
+    const nonRecommendedFoods = nonRecommendedFoodsList.map(
+      (food) => food.title
+    );
+
+    const user = await User.findByIdAndUpdate(
+      idUser,
+      {
+        $set: {
+          "dailyIntake.dailyCalorieIntake": dailyCalorieIntake,
+          "dailyIntake.nonRecommendedFoods": nonRecommendedFoods,
+        },
+      },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
     res.json({
-      dailyCalorieIntake: `${dailyCalorieIntake} kcl`,
-      nonRecommendedFoods,
+      dailyCalorieIntake: user.dailyIntake.dailyCalorieIntake,
+      nonRecommendedFoods: user.dailyIntake.nonRecommendedFoods,
     });
   } catch (err) {
-    console.error(err.message);
     res.status(500).send("Server Error");
   }
 };
