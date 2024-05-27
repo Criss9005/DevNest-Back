@@ -64,49 +64,68 @@ router.get("/public/daily-intake", getDailyIntakePublic);
 /**
  * @swagger
  * /api/products/private/daily-intake:
- *   get:
+ *   post:
  *     summary: Get daily calorie intake and non-recommended products (private)
  *     tags: [Products]
  *     security:
  *       - bearerAuth: []
- *     parameters:
- *       - in: query
- *         name: height
- *         schema:
- *           type: number
- *         required: true
- *         description: Height of the user
- *       - in: query
- *         name: desiredWeight
- *         schema:
- *           type: number
- *         required: true
- *         description: Desired weight of the user
- *       - in: query
- *         name: bloodType
- *         schema:
- *           type: number
- *         required: true
- *         description: Blood type of the user
- *       - in: query
- *         name: age
- *         schema:
- *           type: number
- *         required: true
- *         description: Age of the user
- *       - in: query
- *         name: currentWeight
- *         schema:
- *           type: number
- *         required: true
- *         description: Current weight of the user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               height:
+ *                 type: number
+ *                 description: Height of the user
+ *                 example: 170
+ *               desiredWeight:
+ *                 type: number
+ *                 description: Desired weight of the user
+ *                 example: 65
+ *               bloodType:
+ *                 type: number
+ *                 description: Blood type of the user
+ *                 example: 2
+ *               age:
+ *                 type: number
+ *                 description: Age of the user
+ *                 example: 30
+ *               currentWeight:
+ *                 type: number
+ *                 description: Current weight of the user
+ *                 example: 80
  *     responses:
  *       200:
  *         description: Successfully retrieved and saved daily intake
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 dailyCalorieIntake:
+ *                   type: number
+ *                   description: Calculated daily calorie intake
+ *                   example: 2000
+ *                 nonRecommendedFoods:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   description: List of non-recommended foods
+ *                   example: ["Bread", "Pasta"]
  *       400:
  *         description: Bad request
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
  */
-router.get("/private/daily-intake", ensureAuthenticated, getDailyIntakePrivate);
+router.post(
+  "/private/daily-intake",
+  ensureAuthenticated,
+  getDailyIntakePrivate
+);
 
 /**
  * @swagger
