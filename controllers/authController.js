@@ -5,6 +5,7 @@ const {
   loginF,
   blackListToken,
   newPairOfTokens,
+  updateData,
 } = require("../models/auth.js");
 
 const schema = Joi.object({
@@ -132,9 +133,30 @@ const refresh = async (req, res) => {
     }
   } catch (error) {}
 };
+
+
+const userData = async (req, res) => {
+  
+    try {
+        const {weight, height, age, bloodType, desiredWeight, id } = req.body
+        const success = await updateData(id, weight, height, age, bloodType, desiredWeight )
+            
+       if (success) { 
+            return res.status(200).send({ messege: 'Update Completed' })
+        }
+          
+        return res.status(400).json({ message: "Update failed or user not found" })
+
+} catch (error) {
+    console.log(error)
+}
+        
+};
+
 module.exports = {
   register,
   login,
   logout,
   refresh,
+  userData
 };

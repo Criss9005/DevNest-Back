@@ -1,7 +1,7 @@
 const express = require('express')
 const authRouter = express.Router();
 const Joi = require('joi') 
-const {register, login, blackListToken, newPairOfTokens} = require('../../models/auth')
+const {registerF, loginF, blackListToken, newPairOfTokens, updateData} = require('../../models/auth')
 const { ensureAuthenticated} = require("../../middlewares/validate-jwt.js")
 const { isInBlackList} = require("../../middlewares/blacklistCheck.js")
 
@@ -27,7 +27,7 @@ authRouter.post('/register', async (req, res, next) => {
                 
                 } else { 
                     
-                    const { success, user, message } = await register(req.body)
+                    const { success, user, message } = await registerF(req.body)
                     if (!success) {
                         return res.status(409).json({
                             message
@@ -62,7 +62,7 @@ authRouter.post('/login', async (req, res, next) => {
                 
                 } else { 
                     const {email, password } = req.body
-                    const { success, result, message} = await login(email, password)
+                    const { success, result, message} = await loginF(email, password)
                     if (!success) {
                         return res.status(401).json({
                             message
@@ -153,5 +153,9 @@ authRouter.post('/refresh', ensureAuthenticated, isInBlackList,  async (req, res
     }
   
 });
+
+
+
+
 
 module.exports = authRouter

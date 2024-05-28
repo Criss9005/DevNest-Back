@@ -167,10 +167,31 @@ const newPairOfTokens = async (sid) => {
   }
 };
 
+
+const updateData = async (id, weight, height, age, bloodType, desiredWeight) => {
+  try {
+    const result = await users.findByIdAndUpdate({ _id: id }, { userData: { weight, height, age, bloodType, desiredWeight } })
+    
+    if (result) { 
+    return {
+      success: true,
+    };
+    }
+    return {
+      success: false,
+    };
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+
 module.exports = {
   registerF,
   loginF,
   logout,
   blackListToken,
   newPairOfTokens,
+  updateData
 };
