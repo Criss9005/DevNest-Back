@@ -1,5 +1,5 @@
 const express = require("express");
-const { register, login, logout, refresh } = require("../../controllers/authController");
+const { register, login, logout, refresh, userData } = require("../../controllers/authController");
 const { ensureAuthenticated } = require("../../middlewares/validate-jwt")
 const {isInBlackList } = require("../../middlewares/blacklistCheck")
 
@@ -135,5 +135,35 @@ router.post("/logout", ensureAuthenticated, logout);
  */
 router.post("/refresh", ensureAuthenticated, isInBlackList, refresh);
 
+
+/**
+ * @swagger
+ * /api/auth/userdata:
+ *   put:
+ *     summary: Refresh data when the user is logged in
+ *     tags: [Auth]
+ *     requestBody: Id from the user
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: string
+ *             example:
+ *               sid: 1d1502ac852d29c670476ff808b2eaf3
+ *               
+ *     responses:
+ *       204:
+ *         description: Successful operation
+ *       400:
+ *         description: No token provided
+ *       401:
+ *         description: Unauthorized (invalid refresh token)
+ *       404:
+ *         description: Invalid user / Invalid session
+ */
+router.put("/userdata", ensureAuthenticated, isInBlackList, userData);
 
 module.exports = router;
